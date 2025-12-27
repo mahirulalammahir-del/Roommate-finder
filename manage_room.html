@@ -1,0 +1,43 @@
+<?php
+include("dbconnect.php");
+
+$room_id = isset($_GET['room_id']) ? $_GET['room_id'] : 0;
+
+if($room_id){
+    $result = $conn->query("SELECT address, rent_amount, room_type, availability_status FROM room WHERE room_id=$room_id");
+    $room = $result->fetch_assoc();
+}
+
+if(isset($_POST['submit'])){
+    $address = $_POST['address'];
+    $rent = $_POST['rent'];
+    $room_type = $_POST['room_type'];
+    $availability = $_POST['availability'];
+
+    if($room_id){
+        $conn->query("UPDATE room SET address='$address', rent_amount='$rent', room_type='$room_type', availability_status='$availability' WHERE room_id=$room_id");
+    } else {
+        $owner_id = 1;
+        $conn->query("INSERT INTO room (owner_id, address, rent_amount, room_type, availability_status) 
+                      VALUES ($owner_id, '$address', '$rent', '$room_type', '$availability')");
+    }
+}
+?>
+
+<html>
+<body>
+<h2><?php echo $room_id ? "Edit Room" : "Add Room"; ?></h2>
+
+<form method="POST">
+Address: <input type="text" name="address" value="<?php echo $room_id ? $room['address'] : ''; ?>"><br>
+Rent: <input type="number" name="rent" value="<?php echo $room_id ? $room['rent_amount'] : ''; ?>"><br>
+Room Type: <input type="text" name="room_type" value="<?php echo $room_id ? $room['room_type'] : ''; ?>"><br>
+Availability: 
+<select name="availability">
+<option value="Available" <?php if($room_id && $room['availability_status']=="Available") echo "selected"; ?>>Available</option>
+<option value="Occupied" <?php if($room_id && $room['availability_status']=="Occupied") echo "selected"; ?>>Occupied</option>
+</select><br>
+<input type="submit" name="submit" value="<?php echo $room_id ? "Update Room" : "Add Room"; ?>">
+</form>
+</body>
+</html>
