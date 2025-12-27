@@ -1,0 +1,34 @@
+<?php
+include("dbconnect.php");
+
+$result = $conn->query("SELECT user_id, name, email, phone, gender FROM user");
+?>
+
+<html>
+<body>
+
+<h2>Registered Users</h2>
+
+<table border="1">
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Phone</th>
+<th>Gender</th>
+</tr>
+
+<?php while($row = $result->fetch_assoc()){ ?>
+<tr>
+<td><?php echo $row['user_id']; ?></td>
+<td><?php echo $row['name']; ?></td>
+<td><?php echo $row['email']; ?></td>
+<td><?php echo $row['phone']; ?></td>
+<td><?php echo $row['gender']; ?></td>
+</tr>
+<?php } ?>
+
+</table>
+
+</body>
+</html>
